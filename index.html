@@ -294,6 +294,12 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
           <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
         </svg>
       </button>
+      <button class="tb-btn" id="bInventory" aria-label="Inventory">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+          <path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/>
+        </svg>
+      </button>
       <button class="tb-btn" id="bSettings" aria-label="Settings">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <circle cx="12" cy="12" r="3"/>
@@ -439,6 +445,35 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
     <input class="search-inp" id="batchSearchInp" placeholder="Search batches…">
   </div>
   <div id="batchContent" class="page"></div>
+</div>
+
+<!-- INVENTORY -->
+<div class="screen" id="scrInventory">
+  <div class="topbar">
+    <button class="tb-btn" id="bBackInventory" aria-label="Back" type="button" style="width:auto;padding:0 10px;gap:6px;font-size:16px;font-weight:600">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <div><div class="tb-name" style="font-size:16px">Inventory</div></div>
+    <div style="width:70px"></div>
+  </div>
+  <div class="page" style="padding:14px">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn-sign" id="invModeScan" style="flex:1;padding:10px">Scan Lookup</button>
+      <button class="btn-sign" id="invModePutaway" style="flex:1;padding:10px;background:var(--gray-200);color:var(--gray-900)">Put-away</button>
+    </div>
+
+    <div id="invScanSection">
+      <div style="aspect-ratio:4/3;max-width:100%;border-radius:12px;overflow:hidden;background:#000;margin-bottom:12px">
+        <video id="invVideo" style="width:100%;height:100%;object-fit:cover" muted playsinline></video>
+      </div>
+      <div id="invScanResult" class="err-box" style="display:none"></div>
+    </div>
+
+    <div id="invPutawaySection" style="display:none">
+      <div id="invPutawayList"></div>
+    </div>
+  </div>
 </div>
 
 <!-- SETTINGS -->
@@ -1542,6 +1577,117 @@ $('bBackBatch').onclick=()=>{
     show('scrScan');startScanner();
   }
 };
+
+// ── INVENTORY ────────────────────────────────────────────────────
+// Own camera pipeline, deliberately separate from startScanner()/
+// handleRaw()/handleScan() above - those are deeply specific to the
+// parts_index/parts_panel 10-char-UID data model and the day's CSV-
+// upload queue, and folding inventory resolution into that same path
+// would mean risky surgery through many downstream assumptions in
+// proven, currently-relied-on code. This mirrors the main scanner's
+// camera setup (same hints, same permission warm-up) without touching it.
+let invCodeReader=null,invControls=null,invMode='scan';
+let invLastCode='',invLastCodeAt=0;
+
+function openInventoryScreen(){
+  stopScanner(); // same rule as every other non-scan screen in this app
+  show('scrInventory');
+  invSetMode('scan');
+  loadInventoryPutaway();
+}
+
+function invSetMode(mode){
+  invMode=mode;
+  $('invModeScan').style.background=mode==='scan'?'':'var(--gray-200)';
+  $('invModeScan').style.color=mode==='scan'?'':'var(--gray-900)';
+  $('invModePutaway').style.background=mode==='putaway'?'':'var(--gray-200)';
+  $('invModePutaway').style.color=mode==='putaway'?'':'var(--gray-900)';
+  $('invScanSection').style.display=mode==='scan'?'':'none';
+  $('invPutawaySection').style.display=mode==='putaway'?'':'none';
+  if(mode==='scan')startInventoryScanner();else stopInventoryScanner();
+}
+
+async function startInventoryScanner(){
+  if(!cfg.url){showInvResult('bad','Set a Receiver URL in Settings first.');return;}
+  if(typeof ZXingBrowser==='undefined')return;
+  const ZX=window.ZXingBrowser;
+  invCodeReader=new ZX.BrowserMultiFormatReader(undefined,{delayBetweenScanAttempts:0,delayBetweenScanSuccess:150});
+  try{
+    const devices=await ZX.BrowserMultiFormatReader.listVideoInputDevices();
+    const back=devices.find(d=>/back|rear|environment/i.test(d.label))||devices[devices.length-1];
+    invControls=await invCodeReader.decodeFromVideoDevice(back?back.deviceId:undefined,'invVideo',(result)=>{
+      if(!result)return;
+      const code=result.getText();
+      const now=Date.now();
+      if(code===invLastCode&&now-invLastCodeAt<SAME_CODE_COOLDOWN_MS)return;
+      invLastCode=code;invLastCodeAt=now;
+      resolveInventoryCode(code);
+    });
+  }catch(e){showInvResult('bad','Camera error: '+e.message);}
+}
+function stopInventoryScanner(){
+  try{invControls&&invControls.stop();}catch(e){}
+  invControls=null;invCodeReader=null;
+}
+function showInvResult(kind,text){
+  const el=$('invScanResult');
+  el.style.display='block';el.textContent=text;
+  el.classList.toggle('on',true);
+  el.style.color=kind==='bad'?'var(--red-600)':'var(--green-700)';
+}
+async function resolveInventoryCode(code){
+  try{
+    const res=await fetch(cfg.url+'/inventory/resolve-scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({device_id:deviceId,code})});
+    if(res.status===403){beep('err');showInvResult('bad','Device not approved for this server.');return;}
+    const data=await res.json();
+    if(data.status==='RESOLVED'){beep('ok');showInvResult('ok',`${data.item_number} — ${data.description}${data.uom_code?' ('+data.uom_code+')':''}`);}
+    else if(data.status==='NOT_FOUND'){beep('err');showInvResult('bad','Not found: '+code);}
+    else if(data.status==='VOID'){beep('err');showInvResult('bad','This code has been voided.');}
+    else if(data.status==='BLOCKED'){beep('err');showInvResult('bad',`${data.item_number} is ${data.item_status}.`);}
+  }catch(e){beep('err');showInvResult('bad','Could not reach the server.');}
+}
+
+async function loadInventoryPutaway(){
+  const el=$('invPutawayList');
+  if(!cfg.url){el.innerHTML='<div class="f-hint">Set a Receiver URL in Settings first.</div>';return;}
+  el.innerHTML='<div class="f-hint">Loading…</div>';
+  // GET with a body isn't reliable cross-platform - device_id travels via
+  // query string here instead, matching /devices/:id/status's existing
+  // GET-with-param convention elsewhere in this app.
+  try{
+    const res=await fetch(cfg.url+'/inventory/putaway-tasks?device_id='+encodeURIComponent(deviceId),{method:'GET'});
+    if(res.status===403){el.innerHTML='<div class="f-hint">Device not approved for this server.</div>';return;}
+    const data=await res.json();
+    const tasks=data.tasks||[];
+    el.innerHTML=tasks.length?tasks.map(t=>`
+      <div style="margin-bottom:10px;padding:12px;background:var(--white);border-radius:var(--r);box-shadow:var(--shadow-sm)">
+        <div style="font-weight:600;margin-bottom:4px">${esc(t.item_number)} — qty ${t.qty}</div>
+        <div class="f-hint" style="margin-bottom:8px">Suggested bin: ${t.suggested_bin_id?('#'+t.suggested_bin_id):'none — pick manually'}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <input class="f-input" id="invBin_${t.id}" placeholder="Bin ID" style="flex:1;min-width:70px" value="${t.suggested_bin_id||''}">
+          <input class="f-input" id="invReason_${t.id}" placeholder="Override reason (if different)" style="flex:2;min-width:120px">
+          <button class="btn-sign" style="width:auto;padding:0 14px;margin-top:0" onclick="confirmInventoryPutaway(${t.id})">Confirm</button>
+        </div>
+      </div>`).join(''):'<div class="f-hint">No pending put-away tasks.</div>';
+  }catch(e){el.innerHTML='<div class="f-hint">Could not reach the server.</div>';}
+}
+async function confirmInventoryPutaway(taskId){
+  const bin_id=Number($('invBin_'+taskId).value);
+  const override_reason_code=$('invReason_'+taskId).value.trim()||null;
+  if(!bin_id)return alert('Enter a bin ID.');
+  try{
+    const res=await fetch(cfg.url+`/inventory/putaway-tasks/${taskId}/confirm`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({device_id:deviceId,bin_id,override_reason_code})});
+    const data=await res.json();
+    if(!data.ok){alert(data.error||'Failed.');return;}
+    beep('ok');
+    await loadInventoryPutaway();
+  }catch(e){alert('Could not reach the server.');}
+}
+
+$('bInventory').onclick=openInventoryScreen;
+$('bBackInventory').onclick=()=>{stopInventoryScanner();show('scrScan');startScanner();};
+$('invModeScan').onclick=()=>invSetMode('scan');
+$('invModePutaway').onclick=()=>{invSetMode('putaway');loadInventoryPutaway();};
 
 // ── STARTUP ────────────────────────────────────────────────
 function checkAuth(){
