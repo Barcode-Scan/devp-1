@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>Matrex Panel Scan</title>
+<title>Barcode Scanner</title>
 <style>
 :root{
   --white:#FFFFFF;--bg:#F5F5F7;--gray-100:#F5F5F7;--gray-200:#E8E8ED;
@@ -268,13 +268,18 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
     <div class="lock-logo-row">
       <div class="lock-logo-box">
         <svg width="30" height="30" viewBox="0 0 200 200" fill="none">
-          <rect x="30" y="30" width="140" height="140" rx="6" transform="rotate(45 100 100)" stroke="#0071E3" stroke-width="10" fill="none"/>
-          <path d="M55 145L55 70L100 115L145 70L145 145" stroke="#0071E3" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M35 65V35H65M135 35H165V65M165 135V165H135M65 165H35V135" stroke="#0071E3" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <rect x="75" y="75" width="7" height="50" fill="#0071E3"/>
+          <rect x="86" y="75" width="4" height="50" fill="#0071E3"/>
+          <rect x="94" y="75" width="9" height="50" fill="#0071E3"/>
+          <rect x="107" y="75" width="5" height="50" fill="#0071E3"/>
+          <rect x="116" y="75" width="4" height="50" fill="#0071E3"/>
+          <rect x="124" y="75" width="6" height="50" fill="#0071E3"/>
         </svg>
       </div>
       <div>
-        <div class="lock-brand">MATREX</div>
-        <div class="lock-brand-sub">Panel Scan System</div>
+        <div class="lock-brand">SCANNER</div>
+        <div class="lock-brand-sub">Barcode Scan System</div>
       </div>
     </div>
     <div class="lock-title">Sign in</div>
@@ -291,7 +296,7 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
     <div class="f-hint">Tap the eye icon if you cannot see what you typed</div>
     <button class="btn-sign" id="pwBtn">Sign In</button>
     <div class="err-box" id="pwErr"></div>
-    <div class="lock-foot">Matrex Window Systems &copy; Internal Use Only</div>
+    <div class="lock-foot">&copy; Internal Use Only</div>
   </div>
 </div>
 
@@ -301,12 +306,17 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
     <div class="tb-left">
       <div class="tb-logo">
         <svg width="18" height="18" viewBox="0 0 200 200" fill="none">
-          <rect x="30" y="30" width="140" height="140" rx="6" transform="rotate(45 100 100)" stroke="#0071E3" stroke-width="12" fill="none"/>
-          <path d="M55 145L55 70L100 115L145 70L145 145" stroke="#0071E3" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M35 65V35H65M135 35H165V65M165 135V165H135M65 165H35V135" stroke="#0071E3" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <rect x="75" y="75" width="7" height="50" fill="#0071E3"/>
+          <rect x="86" y="75" width="4" height="50" fill="#0071E3"/>
+          <rect x="94" y="75" width="9" height="50" fill="#0071E3"/>
+          <rect x="107" y="75" width="5" height="50" fill="#0071E3"/>
+          <rect x="116" y="75" width="4" height="50" fill="#0071E3"/>
+          <rect x="124" y="75" width="6" height="50" fill="#0071E3"/>
         </svg>
       </div>
       <div>
-        <div class="tb-name">MATREX</div>
+        <div class="tb-name">SCANNER</div>
         <div class="tb-date" id="topDate"></div>
       </div>
     </div>
@@ -1045,7 +1055,7 @@ async function handleRaw(raw,method){
   raw=String(raw).trim();if(!raw)return;
   if(method!=='SCAN')return; // manual entry is handled entirely by its own modal/button, not here
   if(raw.length!==ID_LEN){
-    beep('err');showFlash('bad','Not a Matrex code — barcode ignored.');return;
+    beep('err');showFlash('bad','Not a valid code — barcode ignored.');return;
   }
   await handleScan(raw);
 }
