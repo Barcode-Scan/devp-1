@@ -459,7 +459,7 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
         <div class="fg"><label class="fg-label" for="setUrl">Receiver URL</label><input class="fg-input" id="setUrl" inputmode="url" autocapitalize="off" placeholder="https://your-receiver-url"></div>
         <div class="f-hint" id="urlMixedWarn" style="display:none;color:var(--amber-700);margin-bottom:14px">⚠ This app loads over HTTPS, so browsers block plain <code>http://</code> requests to your receiver (even on your local WiFi). Ask IT for an <code>https://</code> receiver URL, or scans will only save to the phone.</div>
         <div class="fg"><label class="fg-label" for="setDev">Device name</label><input class="fg-input" id="setDev" autocapitalize="characters" placeholder="e.g. PHONE-DARPIT"></div>
-        <div class="fg"><label class="fg-label" for="setFilePrefix">CSV file name</label><input class="fg-input" id="setFilePrefix" autocapitalize="characters" placeholder="e.g. Matrex_Scans"></div>
+        <div class="fg"><label class="fg-label" for="setFilePrefix">CSV file name</label><input class="fg-input" id="setFilePrefix" autocapitalize="characters" placeholder="e.g. Barcode_Scans"></div>
         <div class="f-hint" style="margin-bottom:14px">Saved as &lt;name&gt;_YYYY-MM-DD.csv — the date is always added automatically.</div>
         <button class="btn btn-solid" id="bSaveSet" type="button" style="font-size:17px;padding:14px">Save Settings</button>
         <button class="btn btn-outline mt10" id="bTestConn" type="button">Test Connection</button>
@@ -553,7 +553,7 @@ function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMo
 const fmtT=iso=>iso?new Date(iso).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'—';
 const fmtDT=iso=>iso?new Date(iso).toLocaleDateString([],{month:'short',day:'numeric'})+' '+fmtT(iso):'Never';
 
-let cfg=lsGet(LS.cfg)||{url:'',dev:'MATREX-PHONE',filePrefix:'Matrex_Scans'};
+let cfg=lsGet(LS.cfg)||{url:'',dev:'BARCODE-PHONE',filePrefix:'Barcode_Scans'};
 let deviceId=lsGet(LS.deviceId);
 if(!deviceId){deviceId=uuid();lsSet(LS.deviceId,deviceId);}
 let deviceStatus='UNKNOWN'; // UNKNOWN | PENDING | APPROVED | REVOKED
@@ -611,7 +611,7 @@ function buildCSVRows(list){
   return[h.join(','),...list.map(s=>[s.date,s.time,s.uniqueId||'',s.matchStatus||'',s.batchSheet,s.project,s.floor,s.partType,s.partName,s.size,s.qty,s.colour,s.skid||'',s.method,s.flag||'',cfg.dev].map(q).join(','))].join('\r\n');
 }
 const buildCSV=()=>buildCSVRows(scans);
-const csvName=(d)=>(cfg.filePrefix||'Matrex_Scans')+'_'+(d||today)+'.csv';
+const csvName=(d)=>(cfg.filePrefix||'Barcode_Scans')+'_'+(d||today)+'.csv';
 function downloadBlob(csv,filename){const b=new Blob([csv],{type:'text/csv;charset=utf-8;'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=filename;a.click();URL.revokeObjectURL(u);}
 function downloadCSV(){downloadBlob(buildCSV(),csvName());}
 
@@ -1205,7 +1205,7 @@ function refreshSettings(){
 }
 function openSettingsScreen(){
   stopScanner(); // camera has no business running while the user isn't on the scan screen
-  $('setUrl').value=cfg.url;$('setDev').value=cfg.dev;$('setFilePrefix').value=cfg.filePrefix||'Matrex_Scans';$('connRes').textContent='';refreshSettings();checkMixedWarn();show('scrSettings');
+  $('setUrl').value=cfg.url;$('setDev').value=cfg.dev;$('setFilePrefix').value=cfg.filePrefix||'Barcode_Scans';$('connRes').textContent='';refreshSettings();checkMixedWarn();show('scrSettings');
 }
 $('setUrl').addEventListener('input',checkMixedWarn);
 $('bSettings').onclick=openSettingsScreen;
@@ -1215,7 +1215,7 @@ $('bSaveSet').onclick=async()=>{
   const u=$('setUrl').value.trim().replace(/\/+$/,'');
   if(u&&!validUrl(u)){showFlash('bad','Receiver URL must start with http:// or https://');return;}
   const prefix=$('setFilePrefix').value.trim().replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'_');
-  cfg.url=u;cfg.dev=$('setDev').value.trim()||'MATREX-PHONE';cfg.filePrefix=prefix||'Matrex_Scans';lsSet(LS.cfg,cfg);show('scrScan');refreshSettings();
+  cfg.url=u;cfg.dev=$('setDev').value.trim()||'BARCODE-PHONE';cfg.filePrefix=prefix||'Barcode_Scans';lsSet(LS.cfg,cfg);show('scrScan');refreshSettings();
   if(cfg.url&&scans.length)scheduleAutoUpload(); // flush anything already queued instead of waiting for the next scan
   if(u){const st=await registerDevice();showFlash(st==='APPROVED'?'ok':'bad','Settings saved — device '+st.toLowerCase());}
   else showFlash('ok','Settings saved');
