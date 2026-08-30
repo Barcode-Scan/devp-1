@@ -262,46 +262,8 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
 </head>
 <body>
 
-<!-- LOCK -->
-<div class="screen on" id="scrLock">
-  <div class="lock-wrap" style="margin:auto">
-    <div class="lock-logo-row">
-      <div class="lock-logo-box">
-        <svg width="30" height="30" viewBox="0 0 200 200" fill="none">
-          <path d="M35 65V35H65M135 35H165V65M165 135V165H135M65 165H35V135" stroke="#0071E3" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <rect x="75" y="75" width="7" height="50" fill="#0071E3"/>
-          <rect x="86" y="75" width="4" height="50" fill="#0071E3"/>
-          <rect x="94" y="75" width="9" height="50" fill="#0071E3"/>
-          <rect x="107" y="75" width="5" height="50" fill="#0071E3"/>
-          <rect x="116" y="75" width="4" height="50" fill="#0071E3"/>
-          <rect x="124" y="75" width="6" height="50" fill="#0071E3"/>
-        </svg>
-      </div>
-      <div>
-        <div class="lock-brand">SCANNER</div>
-        <div class="lock-brand-sub">Barcode Scan System</div>
-      </div>
-    </div>
-    <div class="lock-title">Sign in</div>
-    <div class="lock-sub">Enter your password to access the scanner.</div>
-    <label class="f-label" for="pwInput">Password</label>
-    <div class="f-wrap">
-      <input class="f-input" id="pwInput" type="password" placeholder="Enter password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false">
-      <button class="f-eye" id="pwEye" type="button" aria-label="Show password">
-        <svg id="eyeIco" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
-      </button>
-    </div>
-    <div class="f-hint">Tap the eye icon if you cannot see what you typed</div>
-    <button class="btn-sign" id="pwBtn">Sign In</button>
-    <div class="err-box" id="pwErr"></div>
-    <div class="lock-foot">&copy; Internal Use Only</div>
-  </div>
-</div>
-
 <!-- SCAN -->
-<div class="screen" id="scrScan">
+<div class="screen on" id="scrScan">
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-logo">
@@ -336,11 +298,6 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
-      </button>
-      <button class="tb-btn" id="bLock" aria-label="Lock">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       </button>
     </div>
@@ -552,10 +509,6 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
 
 <div class="mbg" id="mScan"><div class="msheet"><div class="mhandle"></div><div class="m-icon-wrap info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0071E3" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div><div class="m-title">Scan details</div><div class="m-desc">Review the mapped fields from this barcode scan.</div><div class="data-card" id="mScanData"></div><div class="sec-hdr" style="margin-top:4px"><span class="sec-title">Notes</span></div><div id="notesList" style="margin-bottom:10px"></div><div class="mbtns" id="noteActionBtns" style="justify-content:flex-start;gap:8px"><button class="btn btn-outline" id="bAddNote" type="button" style="display:none">+ Add Note</button><button class="btn btn-outline" id="bVoidPart" type="button" style="display:none;color:var(--red-600);border-color:var(--red-600)">Void This Part</button></div><div id="addNoteForm" style="display:none"><div id="voidWarning" style="display:none;font-size:12px;color:var(--red-600);margin-bottom:8px">This marks the part VOID — every future scan of it will be flagged. Choose a reason below.</div><div class="fg"><label class="fg-label" for="noteCategory">Category</label><select class="fg-input" id="noteCategory"></select></div><div class="fg"><label class="fg-label" for="noteText">Details <span id="noteTextReq" style="display:none;color:var(--red-600)">*</span></label><input class="fg-input" id="noteText" placeholder="Optional details"></div><div class="mbtns"><button class="m-ok" id="noteSubmit" type="button">Add Note</button><button class="m-cancel" id="noteCancel" type="button">Cancel</button></div></div><div class="mbtns" id="mScanCloseWrap"><button class="m-ok" id="mScanClose" type="button">Close</button></div></div></div>
 
-<div class="mbg" id="mSettingsAuth"><div class="msheet"><div class="mhandle"></div><div class="m-icon-wrap info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0071E3" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="m-title">Settings Locked</div><div class="m-desc">Enter the settings password to continue.</div><div class="fg"><label class="fg-label" for="setAuthPw">Password</label><div class="f-wrap"><input class="f-input" id="setAuthPw" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Enter password"><button class="f-eye" id="setAuthEye" type="button" aria-label="Show password"><svg id="setAuthEyeIco" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div><div class="err-box" id="setAuthErr">Incorrect password.</div><div class="mbtns"><button class="m-ok" id="setAuthOk" type="button">Unlock</button><button class="m-cancel" id="setAuthCancel" type="button">Cancel</button></div></div></div>
-
-<div class="mbg" id="mBatchAuth"><div class="msheet"><div class="mhandle"></div><div class="m-icon-wrap info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0071E3" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="m-title">Batch Status Locked</div><div class="m-desc">Enter the batch status password to continue.</div><div class="fg"><label class="fg-label" for="batchAuthPw">Password</label><div class="f-wrap"><input class="f-input" id="batchAuthPw" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Enter password"><button class="f-eye" id="batchAuthEye" type="button" aria-label="Show password"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div><div class="err-box" id="batchAuthErr">Incorrect password.</div><div class="mbtns"><button class="m-ok" id="batchAuthOk" type="button">Unlock</button><button class="m-cancel" id="batchAuthCancel" type="button">Cancel</button></div></div></div>
-
 <div class="mbg" id="mBatchLabel"><div class="msheet"><div class="mhandle"></div><div class="m-icon-wrap info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0071E3" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div><div class="m-title">Label details</div><div class="data-card" id="mBatchLabelData"></div><div class="sec-hdr" style="margin-top:4px"><span class="sec-title">Notes</span></div><div id="batchLabelNotes" style="margin-bottom:10px"></div><div class="mbtns"><button class="m-ok" id="mBatchLabelClose" type="button">Close</button></div></div></div>
 
 <script>
@@ -582,7 +535,6 @@ html,body{height:100%;background:var(--bg);color:var(--gray-900);
   carried over unchanged in behavior.
 */
 
-const PASSWORD='M@trex';
 const LS={scans:d=>'mx_scans_'+d,cfg:'mx_cfg',lastUp:'mx_lastup',camSize:'mx_camsize',login:'mx_login',synced:d=>'mx_synced_'+d,deviceId:'mx_device_id'};
 const LOGIN_TTL_MS=30*24*60*60*1000; // stay signed in for 30 days on this phone
 
@@ -1251,26 +1203,12 @@ function refreshSettings(){
   if(cfg.url){srv.className='chip chip-on';srv.innerHTML='<span></span>Configured';}
   else{srv.className='chip chip-off';srv.innerHTML='<span></span>Not configured';}
 }
-const SETTINGS_PASSWORD='3090L4K572';
 function openSettingsScreen(){
   stopScanner(); // camera has no business running while the user isn't on the scan screen
   $('setUrl').value=cfg.url;$('setDev').value=cfg.dev;$('setFilePrefix').value=cfg.filePrefix||'Matrex_Scans';$('connRes').textContent='';refreshSettings();checkMixedWarn();show('scrSettings');
 }
 $('setUrl').addEventListener('input',checkMixedWarn);
-function trySettingsAuth(){
-  const v=$('setAuthPw').value.trim();
-  if(v===SETTINGS_PASSWORD){
-    modal('mSettingsAuth',false);openSettingsScreen();
-  }else{
-    $('setAuthErr').classList.add('on');$('setAuthPw').value='';$('setAuthPw').focus();
-    setTimeout(()=>{$('setAuthErr').classList.remove('on');},3000);
-  }
-}
-$('bSettings').onclick=()=>{$('setAuthPw').value='';$('setAuthPw').type='password';$('setAuthErr').classList.remove('on');modal('mSettingsAuth',true);$('setAuthPw').focus();};
-$('setAuthEye').onclick=()=>{const i=$('setAuthPw');i.type=i.type==='password'?'text':'password';};
-$('setAuthOk').onclick=trySettingsAuth;
-$('setAuthPw').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();trySettingsAuth();}});
-$('setAuthCancel').onclick=()=>modal('mSettingsAuth',false);
+$('bSettings').onclick=openSettingsScreen;
 $('bBackSettings').onclick=()=>{show('scrScan');startScanner();};
 function validUrl(u){return /^https?:\/\/[^\s]+$/i.test(u);}
 $('bSaveSet').onclick=async()=>{
@@ -1478,8 +1416,8 @@ $('bBackList').onclick=()=>{show('scrScan');startScanner();};
 // keys per purpose (see the ingest key on the server). Works from any
 // device with the receiver URL configured — the password IS the API
 // credential, nothing extra to store.
-const BATCH_PASSWORD='3090MWS';
-let viewerKey='';
+const BATCH_PASSWORD='3090MWS'; // still the actual X-Viewer-Key sent to the server — no longer typed by the user, just applied automatically
+const viewerKey=BATCH_PASSWORD;
 let batchView='list'; // 'list' | 'detail'
 let batchListCache=[];
 let batchDetailCache=null; // {batch, labels}
@@ -1492,26 +1430,7 @@ async function viewerFetch(path){
   return r.json();
 }
 
-function openBatchAuth(){
-  $('batchAuthPw').value='';$('batchAuthPw').type='password';$('batchAuthErr').classList.remove('on');
-  modal('mBatchAuth',true);$('batchAuthPw').focus();
-}
-function tryBatchAuth(){
-  const v=$('batchAuthPw').value.trim();
-  if(v===BATCH_PASSWORD){
-    viewerKey=v;
-    modal('mBatchAuth',false);
-    openBatchStatusScreen();
-  }else{
-    $('batchAuthErr').classList.add('on');$('batchAuthPw').value='';$('batchAuthPw').focus();
-    setTimeout(()=>{$('batchAuthErr').classList.remove('on');},3000);
-  }
-}
-$('bBatch').onclick=openBatchAuth;
-$('batchAuthOk').onclick=tryBatchAuth;
-$('batchAuthPw').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();tryBatchAuth();}});
-$('batchAuthCancel').onclick=()=>modal('mBatchAuth',false);
-$('batchAuthEye').onclick=()=>{const i=$('batchAuthPw');i.type=i.type==='password'?'text':'password';};
+$('bBatch').onclick=openBatchStatusScreen;
 
 function openBatchStatusScreen(){
   stopScanner(); // not a scanning screen — same rule as Settings/All Scans
@@ -1624,33 +1543,10 @@ $('bBackBatch').onclick=()=>{
   }
 };
 
-// ── LOGIN ──────────────────────────────────────────────────
-$('pwEye').onclick=()=>{const i=$('pwInput');i.type=i.type==='password'?'text':'password';};
-$('pwBtn').onclick=tryUnlock;
-$('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();tryUnlock();}});
-function tryUnlock(){
-  const v=$('pwInput').value.trim()
-    .replace(/[\u00A0\uFEFF\u200B]/g,'')
-    .replace(/＠/g,'@');
-  if(v===PASSWORD){
-    lsSet(LS.login,{exp:Date.now()+LOGIN_TTL_MS});$('pwErr').classList.remove('on');$('pwInput').classList.remove('err');
-    show('scrScan');startScanner();
-  }else{
-    $('pwInput').classList.add('err');
-    $('pwErr').textContent='Incorrect password. Tap the eye icon to check what you typed.';
-    $('pwErr').classList.add('on');$('pwInput').value='';$('pwInput').focus();
-    setTimeout(()=>{$('pwInput').classList.remove('err');$('pwErr').classList.remove('on');},3000);
-  }
-}
+// ── STARTUP ────────────────────────────────────────────────
 function checkAuth(){
-  const l=lsGet(LS.login);
-  (l&&l.exp>Date.now())?(show('scrScan'),startScanner()):show('scrLock');
+  show('scrScan');startScanner();
 }
-$('bLock').onclick=()=>{
-  localStorage.removeItem(LS.login);stopScanner();show('scrLock');
-  $('pwInput').value='';$('pwInput').type='password';
-  $('camStatus').classList.remove('gone');setCamMsg('Starting camera…');
-};
 
 // ── CLOCK ──────────────────────────────────────────────────
 function tick(){$('topDate').textContent=today+'  '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
